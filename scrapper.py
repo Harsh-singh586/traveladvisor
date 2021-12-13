@@ -34,8 +34,11 @@ class New_York:
 
 			for i in hotel_list:
 				try:
+					hotel_detail = {}
+					details_field = ['name', 'price', 'rating', 'image_link', 'tripadvisor_link']
 					unique_key = i.find('div', attrs = {'class' : 'meta_listing'})['data-locationid']
 					name = i.find('div', attrs = {'class' : 'listing_title'}).text.split('    ')[1].strip()
+					hotel_detail['name'] = name
 					price_list_scrap = i.find_all('div', attrs = {'class' : 'text-link'})
 					vendors_price = []
 					for vendor in price_list_scrap:
@@ -46,14 +49,17 @@ class New_York:
 					additionl_vendor = i.find('div', attrs = {'class' : 'provider'}).text.strip()
 					additionl_vendor_price = i.find('div', attrs = {'class' : 'price-wrap'}).text.strip()
 					vendors_price.append({'vendor_name' : additionl_vendor, 'vendor_price' : additionl_vendor_price})
+					hotel_detail['prices'] = vendors_price
 					hotel_rating = i.find('a', attrs = {'class' : 'ui_bubble_rating'})['alt']
+					hotel_detail['rating'] = hotel_rating
 					image_link = i.find('img')['src']
+					hotel_detail['image_link'] = image_link
 					tripadvisor_link = i.find('a', attrs = {'class' : 'respListingPhoto'})['href']
 					add_head_tripadvisor_link = 'https://tripadvisor.in' + tripadvisor_link
-					hotel_detail = {'__id' : unique_key,'name' : name, 'prices' : vendors_price, 'rating' : hotel_rating, 'image_link' : image_link, 'hotellink' : add_head_tripadvisor_link}
+					hotel_detail['tripadvisor_link'] = add_head_tripadvisor_link
 					details.append(hotel_detail)
 				except Exception as e:
-					print('pass', end = '\n')
+					print(e)
 		return(details)
 
 	def getrestaurants(self):
@@ -73,6 +79,7 @@ class New_York:
 			restaurants = soup.find_all('div', attrs = {'jsname' : 'GZq3Ke'})
 			for i in restaurants:
 				try:
+					details_field = ['name', 'review', 'avg_cost', 'cuisine', 'description', 'address', 'services']
 					ids = i['jsdata'] 
 					main_container = i.find('div', attrs = {'class' : 'cXedhc uQ4NLd'})
 					if main_container:
@@ -122,6 +129,7 @@ class New_York:
 		elements = soup.find_all('div', attrs = {'class' : 'Ld2paf'})
 		all_detail = []
 		for element in elements:
+			details_field = ['name', 'rating', 'description', 'image_link']
 			name = element.find('div', attrs = {'class' : 'skFvHc YmWhbc'}).text
 			try:
 				rating = element.find('div', attrs = {'class' : 'tP34jb'}).text
@@ -147,6 +155,7 @@ class New_York:
 		elements = soup.find_all('div', attrs = {'class' : 'Ld2paf'})
 		all_detail = []
 		for element in elements:
+			details_field = ['name', 'rating', 'description', 'image_link']
 			name = element.find('div', attrs = {'class' : 'skFvHc YmWhbc'}).text
 			try:
 				rating = element.find('div', attrs = {'class' : 'tP34jb'}).text
@@ -196,6 +205,7 @@ class New_delhi:
 
 			for i in hotel_list:
 				try:
+					details_field = ['name', 'price', 'rating', 'image_link', 'tripadvisor_link']
 					unique_key = i.find('div', attrs = {'class' : 'meta_listing'})['data-locationid']
 					name = i.find('div', attrs = {'class' : 'listing_title'}).text.split('    ')[1].strip()
 					price_list_scrap = i.find_all('div', attrs = {'class' : 'text-link'})
@@ -231,6 +241,7 @@ class New_delhi:
 			soup = BeautifulSoup(r.content, 'html.parser')
 			restaurants = soup.find_all('div', attrs = {'class' : '_3XX_A'})
 			for restaurant in restaurants:
+				details_field = ['name', 'cuisine', 'rating', 'price', 'restaurant_url']
 				name = restaurant.find('div', attrs = {'class' : 'nA6kb'}).text
 				cuisine = restaurant.find('div', attrs = {'class' : '_1gURR'}).text
 				rating = restaurant.find('div', attrs = {'class' : '_9uwBC'}).text
@@ -248,6 +259,7 @@ class New_delhi:
 		elements = soup.find_all('div', attrs = {'class' : 'Ld2paf'})
 		all_detail = []
 		for element in elements:
+			details_field = ['name', 'rating', 'description', 'image_link']
 			name = element.find('div', attrs = {'class' : 'skFvHc YmWhbc'}).text
 			try:
 				rating = element.find('div', attrs = {'class' : 'tP34jb'}).text
@@ -267,7 +279,7 @@ class New_delhi:
 		return(all_detail)
 
 
-newdelhi = New_delhi()
-x = newdelhi.getthingstosee()
+newdelhi = New_York()
+x = newdelhi.gethotels()
 print(x)
 print(len(x))
