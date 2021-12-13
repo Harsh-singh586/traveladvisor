@@ -16,13 +16,8 @@ class New_York:
 		for k in range(60, 910, 30):
 			link_list.append(base_url.format(a = k))
 
-		print(link_list)
-
 		for link in link_list:
-			print('a')
 			html_list.append(session.get(link))
-
-		print(html_list)
 
 		details = []
 
@@ -34,6 +29,7 @@ class New_York:
 
 			for i in hotel_list:
 				try:
+					print('a')
 					hotel_detail = {}
 					details_field = ['name', 'price', 'rating', 'image_link', 'tripadvisor_link']
 					unique_key = i.find('div', attrs = {'class' : 'meta_listing'})['data-locationid']
@@ -50,8 +46,8 @@ class New_York:
 					additionl_vendor_price = i.find('div', attrs = {'class' : 'price-wrap'}).text.strip()
 					vendors_price.append({'vendor_name' : additionl_vendor, 'vendor_price' : additionl_vendor_price})
 					hotel_detail['prices'] = vendors_price
-					hotel_rating = i.find('a', attrs = {'class' : 'ui_bubble_rating'})['alt']
-					hotel_detail['rating'] = hotel_rating
+					hotel_rating = i.find('a', attrs = {'class' : 'ui_bubble_rating'})['alt'].split('of')[0].strip()
+					hotel_detail['rating'] = float(hotel_rating)
 					image_link = i.find('img')['src']
 					hotel_detail['image_link'] = image_link
 					tripadvisor_link = i.find('a', attrs = {'class' : 'respListingPhoto'})['href']
@@ -59,7 +55,7 @@ class New_York:
 					hotel_detail['tripadvisor_link'] = add_head_tripadvisor_link
 					details.append(hotel_detail)
 				except Exception as e:
-					print(e)
+					pass
 		return(details)
 
 	def getrestaurants(self):
@@ -279,7 +275,3 @@ class New_delhi:
 		return(all_detail)
 
 
-newdelhi = New_York()
-x = newdelhi.gethotels()
-print(x)
-print(len(x))
